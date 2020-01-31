@@ -32,7 +32,7 @@ function App() {
 	return (
 		<div className="App">
 			<header className="App-header">
-				<div>{user.avatar}</div>
+				<img src={user.avatar} alt="user avatar" />
 				<div>{`Welcome ${user.fullName}`}</div>
 				<button>Change User</button>
 			</header>
