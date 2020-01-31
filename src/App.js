@@ -27,14 +27,17 @@ function App() {
 		fetchUser().then((user) => setUser(user));
 	}, []);
 
-	console.log(user);
+	const changeUser = () => {
+		window.localStorage.removeItem('userId');
+		fetchUser().then((user) => setUser(user));
+	};
 
 	return (
 		<div className="App">
 			<header className="App-header">
 				<img src={user.avatar} alt="user avatar" />
-				<div>{`Welcome ${user.fullName}`}</div>
-				<button>Change User</button>
+				<div>{`Welcome, ${user.fullName}!`}</div>
+				<button onClick={changeUser}>Change User</button>
 			</header>
 		</div>
 	);
