@@ -42,3 +42,15 @@
 .App-header img {
 	border-radius: 50%;
 }
+
+nav {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+	height: 140px;
+	width: 100%;
+}
+
+nav div {
+}

@@ -22,15 +22,41 @@ const fetchUser = async () => {
 
 function App() {
 	const [ user, setUser ] = useState({});
+	const [ notes, setNotes ] = useState({});
+	const [ newNote, setNewNote ] = useState('');
+	const [ vacations, setVacations ] = useState([]);
+	const [ newStartDate, setNewStartDate ] = useState('');
+	const [ newEndDate, setNewEndDate ] = useState('');
 
 	useEffect(() => {
 		fetchUser().then((user) => setUser(user));
 	}, []);
 
+	useEffect(
+		() => {
+			if (user.id) {
+				axios.get(`${API}/users/${user.id}/notes`).then((notes) => setNotes(notes.data));
+			}
+		},
+		[ user.id ]
+	);
+
+	useEffect(
+		() => {
+			if (user.id) {
+				axios.get(`${API}/users/${user.id}/vacations`).then((vacations) => setVacations(vacations.data));
+			}
+		},
+		[ user.id ]
+	);
+
 	const changeUser = () => {
 		window.localStorage.removeItem('userId');
 		fetchUser().then((user) => setUser(user));
 	};
+
+	console.log(notes);
+	console.log(vacations);
 
 	return (
 		<div className="App">
@@ -39,6 +65,20 @@ function App() {
 				<div>{`Welcome, ${user.fullName}!`}</div>
 				<button onClick={changeUser}>Change User</button>
 			</header>
+			<nav>
+				<div>
+					<h2>Notes</h2>
+					<p>{`You have ${notes.length} notes.`}</p>
+				</div>
+				<div>
+					<h2>Vacations</h2>
+					<p>{`You have ${vacations.length} vacations.`}</p>
+				</div>
+				<div>
+					<h2>Following Companies</h2>
+					<p>{`You are following ${0} companies.`}</p>
+				</div>
+			</nav>
 		</div>
 	);
 }
