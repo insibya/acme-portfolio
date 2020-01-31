@@ -48,9 +48,17 @@ nav {
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-around;
-	height: 140px;
 	width: 100%;
+	padding: 50px;
 }
 
 nav div {
+	height: 200px;
+	width: 200px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background-color: teal;
+	color: white;
+	border-radius: 50%;
 }

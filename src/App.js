@@ -24,9 +24,11 @@ function App() {
 	const [ user, setUser ] = useState({});
 	const [ notes, setNotes ] = useState({});
 	const [ newNote, setNewNote ] = useState('');
-	const [ vacations, setVacations ] = useState([]);
+	const [ vacations, setVacations ] = useState({});
 	const [ newStartDate, setNewStartDate ] = useState('');
 	const [ newEndDate, setNewEndDate ] = useState('');
+	const [ favCompanies, setFavCompanies ] = useState({});
+	const [ newFavCo, setNewFavCo ] = useState({});
 
 	useEffect(() => {
 		fetchUser().then((user) => setUser(user));
@@ -50,13 +52,21 @@ function App() {
 		[ user.id ]
 	);
 
+	useEffect(
+		() => {
+			if (user.id) {
+				axios
+					.get(`${API}/users/${user.id}/followingCompanies`)
+					.then((companies) => setFavCompanies(companies.data));
+			}
+		},
+		[ user.id ]
+	);
+
 	const changeUser = () => {
 		window.localStorage.removeItem('userId');
 		fetchUser().then((user) => setUser(user));
 	};
-
-	console.log(notes);
-	console.log(vacations);
 
 	return (
 		<div className="App">
@@ -76,7 +86,7 @@ function App() {
 				</div>
 				<div>
 					<h2>Following Companies</h2>
-					<p>{`You are following ${0} companies.`}</p>
+					<p>{`You are following ${favCompanies.length} companies.`}</p>
 				</div>
 			</nav>
 		</div>
