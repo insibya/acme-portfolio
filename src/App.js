@@ -91,15 +91,24 @@ function App() {
 			</header>
 			<nav>
 				<div>
-					<a href={`#user=${user.id}&view=notes`}>Notes</a>
+					<a href={`#user=${user.id}&view=notes`} className={view === 'notes' ? 'selected' : ''}>
+						Notes
+					</a>
 					<p>{`You have ${notes.length} notes.`}</p>
 				</div>
 				<div>
-					<a href={`#user=${user.id}&view=vacations`}>Vacations</a>
+					<a href={`#user=${user.id}&view=vacations`} className={view === 'vacations' ? 'selected' : ''}>
+						Vacations
+					</a>
 					<p>{`You have ${vacations.length} vacations.`}</p>
 				</div>
 				<div>
-					<a href={`#user=${user.id}&view=followedcompanies`}>Following Companies</a>
+					<a
+						href={`#user=${user.id}&view=followedcompanies`}
+						className={view === 'followedcompanies' ? 'selected' : ''}
+					>
+						Following Companies
+					</a>
 					<p>{`You are following ${favCompanies.length} companies.`}</p>
 				</div>
 			</nav>

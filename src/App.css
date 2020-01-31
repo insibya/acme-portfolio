@@ -68,3 +68,7 @@ nav div {
 	color: white;
 	border-radius: 50%;
 }
+
+.selected {
+	color: darkred;
+}
