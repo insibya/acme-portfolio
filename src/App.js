@@ -81,6 +81,40 @@ function App() {
 		setParams(qs.parse(getHash()));
 	}, []);
 
+	const Notes = ({ notes }) => {
+		return (
+			<ul>
+				{notes.map((note, idx) => {
+					return <li key={idx}>{note.id}</li>;
+				})}
+			</ul>
+		);
+	};
+
+	const Vacations = ({ vacations }) => {
+		return (
+			<ul>
+				{vacations.map((vacation, idx) => {
+					return (
+						<li key={idx}>
+							{vacation.startDate} - {vacation.endDate}
+						</li>
+					);
+				})}
+			</ul>
+		);
+	};
+
+	const FavCompanies = ({ favCompanies }) => {
+		return (
+			<ul>
+				{favCompanies.map((company, idx) => {
+					return <li key={idx}>{company.id}</li>;
+				})}
+			</ul>
+		);
+	};
+
 	const view = params.view;
 	return (
 		<div className="App">
@@ -112,6 +146,9 @@ function App() {
 					<p>{`You are following ${favCompanies.length} companies.`}</p>
 				</div>
 			</nav>
+			{view === 'notes' && notes.length && <Notes notes={notes} />}
+			{view === 'vacations' && vacations.length && <Vacations vacations={vacations} />}
+			{view === 'followedcompanies' && favCompanies.length && <FavCompanies favCompanies={favCompanies} />}
 		</div>
 	);
 }
