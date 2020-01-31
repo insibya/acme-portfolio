@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import qs from 'qs';
 import './App.css';
 
 const API = 'https://acme-users-api-rev.herokuapp.com/api';
@@ -34,6 +35,11 @@ function App() {
 		fetchUser().then((user) => setUser(user));
 	}, []);
 
+	const changeUser = () => {
+		window.localStorage.removeItem('userId');
+		fetchUser().then((user) => setUser(user));
+	};
+
 	useEffect(
 		() => {
 			if (user.id) {
@@ -63,11 +69,19 @@ function App() {
 		[ user.id ]
 	);
 
-	const changeUser = () => {
-		window.localStorage.removeItem('userId');
-		fetchUser().then((user) => setUser(user));
+	const getHash = () => {
+		return window.location.hash.slice(1);
 	};
+	const [ params, setParams ] = useState(qs.parse(getHash()));
 
+	useEffect(() => {
+		window.addEventListener('hashchange', () => {
+			setParams(qs.parse(getHash()));
+		});
+		setParams(qs.parse(getHash()));
+	}, []);
+
+	const view = params.view;
 	return (
 		<div className="App">
 			<header className="App-header">
@@ -77,15 +91,15 @@ function App() {
 			</header>
 			<nav>
 				<div>
-					<h2>Notes</h2>
+					<a href={`#user=${user.id}&view=notes`}>Notes</a>
 					<p>{`You have ${notes.length} notes.`}</p>
 				</div>
 				<div>
-					<h2>Vacations</h2>
+					<a href={`#user=${user.id}&view=vacations`}>Vacations</a>
 					<p>{`You have ${vacations.length} vacations.`}</p>
 				</div>
 				<div>
-					<h2>Following Companies</h2>
+					<a href={`#user=${user.id}&view=followedcompanies`}>Following Companies</a>
 					<p>{`You are following ${favCompanies.length} companies.`}</p>
 				</div>
 			</nav>

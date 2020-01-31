@@ -49,7 +49,13 @@ nav {
 	align-items: center;
 	justify-content: space-around;
 	width: 100%;
-	padding: 50px;
+	padding-top: 50px;
+	padding-bottom: 50px;
+	background-color: burlywood;
+}
+
+nav a {
+	font-size: 1.5rem;
 }
 
 nav div {
