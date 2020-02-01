@@ -38,6 +38,7 @@ function App() {
 	const changeUser = () => {
 		window.localStorage.removeItem('userId');
 		fetchUser().then((user) => setUser(user));
+		window.location.hash = `user=${user.id}&view=home`;
 	};
 
 	useEffect(
@@ -67,63 +68,81 @@ function App() {
 
 	const Home = ({ notes, vacations, favCompanies }) => {
 		return (
-			<nav>
-				<div>
-					<a href={`#user=${user.id}&view=notes`} className={view === 'notes' ? 'selected' : ''}>
-						Notes
-					</a>
-					<p>{`You have ${notes.length} notes.`}</p>
-				</div>
-				<div>
-					<a href={`#user=${user.id}&view=vacations`} className={view === 'vacations' ? 'selected' : ''}>
-						Vacations
-					</a>
-					<p>{`You have ${vacations.length} vacations.`}</p>
-				</div>
-				<div>
-					<a
-						href={`#user=${user.id}&view=followedcompanies`}
-						className={view === 'followedcompanies' ? 'selected' : ''}
-					>
-						Following Companies
-					</a>
-					<p>{`You are following ${favCompanies.length} companies.`}</p>
-				</div>
-			</nav>
+			<div>
+				<h2>Home</h2>
+				<nav>
+					<div>
+						<a href={`#user=${user.id}&view=notes`} className={view === 'notes' ? 'selected' : ''}>
+							Notes
+						</a>
+						<p>{`You have ${notes.length} notes.`}</p>
+					</div>
+					<div>
+						<a href={`#user=${user.id}&view=vacations`} className={view === 'vacations' ? 'selected' : ''}>
+							Vacations
+						</a>
+						<p>{`You have ${vacations.length} vacations.`}</p>
+					</div>
+					<div>
+						<a
+							href={`#user=${user.id}&view=followedcompanies`}
+							className={view === 'followedcompanies' ? 'selected' : ''}
+						>
+							Following Companies
+						</a>
+						<p>{`You are following ${favCompanies.length} companies.`}</p>
+					</div>
+				</nav>
+			</div>
 		);
 	};
 
 	const Notes = ({ notes }) => {
 		return (
-			<ul>
-				{notes.map((note, idx) => {
-					return <li key={idx}>{note.id}</li>;
-				})}
-			</ul>
+			<div>
+				<h2>Notes</h2>
+				<ul>
+					{notes.length ? (
+						notes.map((note, idx) => {
+							return <li key={idx}>{note.id}</li>;
+						})
+					) : null}
+				</ul>
+			</div>
 		);
 	};
 
 	const Vacations = ({ vacations }) => {
 		return (
-			<ul>
-				{vacations.map((vacation, idx) => {
-					return (
-						<li key={idx}>
-							{vacation.startDate} - {vacation.endDate}
-						</li>
-					);
-				})}
-			</ul>
+			<div>
+				<h2>Vacations</h2>
+				<ul>
+					{vacations.length ? (
+						vacations.map((vacation, idx) => {
+							return (
+								<li key={idx}>
+									{vacation.startDate} - {vacation.endDate}
+								</li>
+							);
+						})
+					) : null}
+				</ul>
+			</div>
 		);
 	};
 
 	const FavCompanies = ({ favCompanies }) => {
 		return (
-			<ul>
-				{favCompanies.map((company, idx) => {
-					return <li key={idx}>{company.id}</li>;
-				})}
-			</ul>
+			<div>
+				<h2>Followed Companies</h2>
+				<ul>
+					{favCompanies.length ? (
+						favCompanies.map((company, idx) => {
+							return <li key={idx}>{company.id}</li>;
+						})
+					) : null}
+				</ul>
+			</div>
 		);
 	};
 
@@ -131,14 +150,18 @@ function App() {
 	return (
 		<div className="App">
 			<header className="App-header">
-				<img src={user.avatar} alt="user avatar" onClick={() => console.log('click')} />
+				<img
+					src={user.avatar}
+					alt="user avatar"
+					onClick={() => (window.location.hash = `user=${user.id}&view=home`)}
+				/>
 				<div>{`Welcome, ${user.fullName}!`}</div>
 				<button onClick={changeUser}>Change User</button>
 			</header>
 			{view === 'home' && <Home notes={notes} vacations={vacations} favCompanies={favCompanies} />}
-			{view === 'notes' && notes.length && <Notes notes={notes} />}
-			{view === 'vacations' && vacations.length && <Vacations vacations={vacations} />}
-			{view === 'followedcompanies' && favCompanies.length && <FavCompanies favCompanies={favCompanies} />}
+			{view === 'notes' && <Notes notes={notes} />}
+			{view === 'vacations' && <Vacations vacations={vacations} />}
+			{view === 'followedcompanies' && <FavCompanies favCompanies={favCompanies} />}
 		</div>
 	);
 }
