@@ -25,12 +25,8 @@ const fetchUser = async () => {
 function App() {
 	const [ user, setUser ] = useState({});
 	const [ notes, setNotes ] = useState({});
-	const [ newNote, setNewNote ] = useState('');
 	const [ vacations, setVacations ] = useState({});
-	const [ newStartDate, setNewStartDate ] = useState('');
-	const [ newEndDate, setNewEndDate ] = useState('');
 	const [ favCompanies, setFavCompanies ] = useState({});
-	const [ newFavCo, setNewFavCo ] = useState({});
 
 	useEffect(() => {
 		fetchUser().then((user) => setUser(user));
@@ -90,7 +86,9 @@ function App() {
 		);
 	};
 
-	const Notes = ({ notes, newNote }) => {
+	const Notes = ({ notes }) => {
+		const [ newNote, setNewNote ] = useState('');
+
 		return (
 			<div>
 				<h2>Notes</h2>
@@ -109,7 +107,7 @@ function App() {
 						})
 					) : null}
 				</ul>
-				<form onSubmit={(ev) => createNote(ev)}>
+				<form onSubmit={(ev) => createNote(ev, newNote)}>
 					<input type="text" value={newNote} onChange={(ev) => setNewNote(ev.target.value)} />
 					<input type="submit" />
 				</form>
@@ -117,7 +115,7 @@ function App() {
 		);
 	};
 
-	const createNote = (ev) => {
+	const createNote = (ev, newNote) => {
 		ev.preventDefault();
 		axios
 			.post(`${API}/users/${user.id}/notes`, { archived: false, text: newNote })
@@ -136,7 +134,10 @@ function App() {
 			.then(() => setNotes(notes.filter((_note) => _note.id !== note.id)));
 	};
 
-	const Vacations = ({ vacations, newStartDate, newEndDate }) => {
+	const Vacations = ({ vacations }) => {
+		const [ newStartDate, setNewStartDate ] = useState('');
+		const [ newEndDate, setNewEndDate ] = useState('');
+
 		return (
 			<div>
 				<h2>Vacations</h2>
@@ -154,7 +155,7 @@ function App() {
 						})
 					) : null}
 				</ul>
-				<form onSubmit={(ev) => createVacation(ev)}>
+				<form onSubmit={(ev) => createVacation(ev, newStartDate, newEndDate)}>
 					<input type="date" value={newStartDate} onChange={(ev) => setNewStartDate(ev.target.value)} />
 					<input type="date" value={newEndDate} onChange={(ev) => setNewEndDate(ev.target.value)} />
 					<input type="submit" />
@@ -163,7 +164,7 @@ function App() {
 		);
 	};
 
-	const createVacation = (ev) => {
+	const createVacation = (ev, newStartDate, newEndDate) => {
 		ev.preventDefault();
 		axios
 			.post(`${API}/users/${user.id}/vacations`, { startDate: newStartDate, endDate: newEndDate })
@@ -176,7 +177,9 @@ function App() {
 			.then(() => setVacations(vacations.filter((_vacation) => _vacation.id !== vacation.id)));
 	};
 
-	const FavCompanies = ({ favCompanies, newFavCo }) => {
+	const FavCompanies = ({ favCompanies }) => {
+		const [ newFavCo, setNewFavCo ] = useState({});
+
 		return (
 			<div>
 				<h2>Followed Companies</h2>
@@ -199,11 +202,9 @@ function App() {
 				<button onClick={changeUser}>Change User</button>
 			</header>
 			{view === 'home' && <Home notes={notes} vacations={vacations} favCompanies={favCompanies} />}
-			{view === 'notes' && <Notes notes={notes} newNote={newNote} />}
-			{view === 'vacations' && (
-				<Vacations vacations={vacations} newStartDate={newStartDate} newEndDate={newEndDate} />
-			)}
-			{view === 'companies' && <FavCompanies favCompanies={favCompanies} newFavCo={newFavCo} />}
+			{view === 'notes' && <Notes notes={notes} />}
+			{view === 'vacations' && <Vacations vacations={vacations} />}
+			{view === 'companies' && <FavCompanies favCompanies={favCompanies} />}
 		</div>
 	);
 }
