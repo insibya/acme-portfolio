@@ -44,23 +44,7 @@ function App() {
 		() => {
 			if (user.id) {
 				axios.get(`${API}/users/${user.id}/notes`).then((notes) => setNotes(notes.data));
-			}
-		},
-		[ user.id ]
-	);
-
-	useEffect(
-		() => {
-			if (user.id) {
 				axios.get(`${API}/users/${user.id}/vacations`).then((vacations) => setVacations(vacations.data));
-			}
-		},
-		[ user.id ]
-	);
-
-	useEffect(
-		() => {
-			if (user.id) {
 				axios
 					.get(`${API}/users/${user.id}/followingCompanies`)
 					.then((companies) => setFavCompanies(companies.data));
@@ -80,6 +64,34 @@ function App() {
 		});
 		setParams(qs.parse(getHash()));
 	}, []);
+
+	const Home = ({ notes, vacations, favCompanies }) => {
+		return (
+			<nav>
+				<div>
+					<a href={`#user=${user.id}&view=notes`} className={view === 'notes' ? 'selected' : ''}>
+						Notes
+					</a>
+					<p>{`You have ${notes.length} notes.`}</p>
+				</div>
+				<div>
+					<a href={`#user=${user.id}&view=vacations`} className={view === 'vacations' ? 'selected' : ''}>
+						Vacations
+					</a>
+					<p>{`You have ${vacations.length} vacations.`}</p>
+				</div>
+				<div>
+					<a
+						href={`#user=${user.id}&view=followedcompanies`}
+						className={view === 'followedcompanies' ? 'selected' : ''}
+					>
+						Following Companies
+					</a>
+					<p>{`You are following ${favCompanies.length} companies.`}</p>
+				</div>
+			</nav>
+		);
+	};
 
 	const Notes = ({ notes }) => {
 		return (
@@ -119,33 +131,11 @@ function App() {
 	return (
 		<div className="App">
 			<header className="App-header">
-				<img src={user.avatar} alt="user avatar" />
+				<img src={user.avatar} alt="user avatar" onClick={() => console.log('click')} />
 				<div>{`Welcome, ${user.fullName}!`}</div>
 				<button onClick={changeUser}>Change User</button>
 			</header>
-			<nav>
-				<div>
-					<a href={`#user=${user.id}&view=notes`} className={view === 'notes' ? 'selected' : ''}>
-						Notes
-					</a>
-					<p>{`You have ${notes.length} notes.`}</p>
-				</div>
-				<div>
-					<a href={`#user=${user.id}&view=vacations`} className={view === 'vacations' ? 'selected' : ''}>
-						Vacations
-					</a>
-					<p>{`You have ${vacations.length} vacations.`}</p>
-				</div>
-				<div>
-					<a
-						href={`#user=${user.id}&view=followedcompanies`}
-						className={view === 'followedcompanies' ? 'selected' : ''}
-					>
-						Following Companies
-					</a>
-					<p>{`You are following ${favCompanies.length} companies.`}</p>
-				</div>
-			</nav>
+			{view === 'home' && <Home notes={notes} vacations={vacations} favCompanies={favCompanies} />}
 			{view === 'notes' && notes.length && <Notes notes={notes} />}
 			{view === 'vacations' && vacations.length && <Vacations vacations={vacations} />}
 			{view === 'followedcompanies' && favCompanies.length && <FavCompanies favCompanies={favCompanies} />}
