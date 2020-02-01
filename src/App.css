@@ -68,3 +68,8 @@ nav div {
 	color: white;
 	border-radius: 50%;
 }
+
+.archived {
+	color: red;
+	text-decoration: line-through;
+}

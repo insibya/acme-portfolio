@@ -98,8 +98,11 @@ function App() {
 					{notes.length ? (
 						notes.map((note) => {
 							return (
-								<li key={note.id}>
+								<li key={note.id} className={note.archived ? '' : 'archived'}>
 									{note.text}
+									<button onClick={() => toggleArchive(note)}>
+										{note.archived ? 'Archive' : 'Un-archive'}
+									</button>
 									<button onClick={() => deleteNote(note)}>Delete</button>
 								</li>
 							);
@@ -119,6 +122,12 @@ function App() {
 		axios
 			.post(`${API}/users/${user.id}/notes`, { archived: false, text: newNote })
 			.then((_note) => setNotes([ ...notes, _note.data ]));
+	};
+
+	const toggleArchive = (note) => {
+		axios
+			.put(`${API}/users/${user.id}/notes/${note.id}`, { archived: !note.archived, text: note.text })
+			.then(() => setNotes([ ...notes ]));
 	};
 
 	const deleteNote = (note) => {
