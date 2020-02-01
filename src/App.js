@@ -58,6 +58,7 @@ function App() {
 		return window.location.hash.slice(1);
 	};
 	const [ params, setParams ] = useState(qs.parse(getHash()));
+	const view = params.view;
 
 	useEffect(() => {
 		window.addEventListener('hashchange', () => {
@@ -80,7 +81,7 @@ function App() {
 						<p>{`You have ${vacations.length} vacations.`}</p>
 					</div>
 					<div>
-						<a href={'#view=followedcompanies'}>Following Companies</a>
+						<a href={'#view=companies'}>Following Companies</a>
 						<p>{`You are following ${favCompanies.length} companies.`}</p>
 					</div>
 				</nav>
@@ -88,14 +89,14 @@ function App() {
 		);
 	};
 
-	const Notes = ({ notes }) => {
+	const Notes = ({ notes, newNote }) => {
 		return (
 			<div>
 				<h2>Notes</h2>
 				<ul>
 					{notes.length ? (
-						notes.map((note, idx) => {
-							return <li key={idx}>{note.id}</li>;
+						notes.map((note) => {
+							return <li key={note.id}>{note.text}</li>;
 						})
 					) : null}
 				</ul>
@@ -103,33 +104,52 @@ function App() {
 		);
 	};
 
-	const Vacations = ({ vacations }) => {
+	const Vacations = ({ vacations, newStartDate, newEndDate }) => {
 		return (
 			<div>
 				<h2>Vacations</h2>
 				<ul>
 					{vacations.length ? (
-						vacations.map((vacation, idx) => {
+						vacations.map((vacation) => {
 							return (
-								<li key={idx}>
+								<li key={vacation.id}>
 									{vacation.startDate} - {vacation.endDate}
+									<button onClick={() => deleteVacation(vacation)}>Delete</button>
 								</li>
 							);
 						})
 					) : null}
 				</ul>
+				<form onSubmit={(ev) => createVacation(ev)}>
+					<input type="date" value={newStartDate} onChange={(ev) => setNewStartDate(ev.target.value)} />
+					<input type="date" value={newEndDate} onChange={(ev) => setNewEndDate(ev.target.value)} />
+					<input type="submit" />
+				</form>
 			</div>
 		);
 	};
 
-	const FavCompanies = ({ favCompanies }) => {
+	const createVacation = (ev) => {
+		ev.preventDefault();
+		axios
+			.post(`${API}/users/${user.id}/vacations`, { startDate: newStartDate, endDate: newEndDate })
+			.then((newVacation) => setVacations([ ...vacations, newVacation.data ]));
+	};
+
+	const deleteVacation = (vacation) => {
+		axios
+			.delete(`${API}/users/${user.id}/vacations/${vacation.id}`)
+			.then(() => setVacations(vacations.filter((_vacation) => _vacation.id !== vacation.id)));
+	};
+
+	const FavCompanies = ({ favCompanies, newFavCo }) => {
 		return (
 			<div>
 				<h2>Followed Companies</h2>
 				<ul>
 					{favCompanies.length ? (
-						favCompanies.map((company, idx) => {
-							return <li key={idx}>{company.id}</li>;
+						favCompanies.map((company) => {
+							return <li key={company.id}>{company.id}</li>;
 						})
 					) : null}
 				</ul>
@@ -137,7 +157,6 @@ function App() {
 		);
 	};
 
-	const view = params.view;
 	return (
 		<div className="App">
 			<header className="App-header">
@@ -146,9 +165,11 @@ function App() {
 				<button onClick={changeUser}>Change User</button>
 			</header>
 			{view === 'home' && <Home notes={notes} vacations={vacations} favCompanies={favCompanies} />}
-			{view === 'notes' && <Notes notes={notes} />}
-			{view === 'vacations' && <Vacations vacations={vacations} />}
-			{view === 'followedcompanies' && <FavCompanies favCompanies={favCompanies} />}
+			{view === 'notes' && <Notes notes={notes} newNote={newNote} />}
+			{view === 'vacations' && (
+				<Vacations vacations={vacations} newStartDate={newStartDate} newEndDate={newEndDate} />
+			)}
+			{view === 'companies' && <FavCompanies favCompanies={favCompanies} newFavCo={newFavCo} />}
 		</div>
 	);
 }
