@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import axios from 'axios';
 import qs from 'qs';
 import './App.css';
@@ -113,7 +114,9 @@ function App() {
 						vacations.map((vacation) => {
 							return (
 								<li key={vacation.id}>
-									{vacation.startDate} - {vacation.endDate}
+									{moment(vacation.startDate).format('ddd DD/MM/YY')} -{' '}
+									{moment(vacation.endDate).format('ddd DD/MM/YY')} ({' '}
+									{moment(vacation.endDate).diff(vacation.startDate, 'days')} days)
 									<button onClick={() => deleteVacation(vacation)}>Delete</button>
 								</li>
 							);
