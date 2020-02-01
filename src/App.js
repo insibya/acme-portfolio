@@ -38,7 +38,7 @@ function App() {
 	const changeUser = () => {
 		window.localStorage.removeItem('userId');
 		fetchUser().then((user) => setUser(user));
-		window.location.hash = `user=${user.id}&view=home`;
+		window.location.hash = '#view=home';
 	};
 
 	useEffect(
@@ -72,24 +72,15 @@ function App() {
 				<h2>Home</h2>
 				<nav>
 					<div>
-						<a href={`#user=${user.id}&view=notes`} className={view === 'notes' ? 'selected' : ''}>
-							Notes
-						</a>
+						<a href={'#view=notes'}>Notes</a>
 						<p>{`You have ${notes.length} notes.`}</p>
 					</div>
 					<div>
-						<a href={`#user=${user.id}&view=vacations`} className={view === 'vacations' ? 'selected' : ''}>
-							Vacations
-						</a>
+						<a href={'#view=vacations'}>Vacations</a>
 						<p>{`You have ${vacations.length} vacations.`}</p>
 					</div>
 					<div>
-						<a
-							href={`#user=${user.id}&view=followedcompanies`}
-							className={view === 'followedcompanies' ? 'selected' : ''}
-						>
-							Following Companies
-						</a>
+						<a href={'#view=followedcompanies'}>Following Companies</a>
 						<p>{`You are following ${favCompanies.length} companies.`}</p>
 					</div>
 				</nav>
@@ -150,11 +141,7 @@ function App() {
 	return (
 		<div className="App">
 			<header className="App-header">
-				<img
-					src={user.avatar}
-					alt="user avatar"
-					onClick={() => (window.location.hash = `user=${user.id}&view=home`)}
-				/>
+				<img src={user.avatar} alt="user avatar" onClick={() => (window.location.hash = '#view=home')} />
 				<div>{`Welcome, ${user.fullName}!`}</div>
 				<button onClick={changeUser}>Change User</button>
 			</header>
