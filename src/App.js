@@ -97,12 +97,34 @@ function App() {
 				<ul>
 					{notes.length ? (
 						notes.map((note) => {
-							return <li key={note.id}>{note.text}</li>;
+							return (
+								<li key={note.id}>
+									{note.text}
+									<button onClick={() => deleteNote(note)}>Delete</button>
+								</li>
+							);
 						})
 					) : null}
 				</ul>
+				<form onSubmit={(ev) => createNote(ev)}>
+					<input type="text" value={newNote} onChange={(ev) => setNewNote(ev.target.value)} />
+					<input type="submit" />
+				</form>
 			</div>
 		);
+	};
+
+	const createNote = (ev) => {
+		ev.preventDefault();
+		axios
+			.post(`${API}/users/${user.id}/notes`, { archived: false, text: newNote })
+			.then((_note) => setNotes([ ...notes, _note.data ]));
+	};
+
+	const deleteNote = (note) => {
+		axios
+			.delete(`${API}/users/${user.id}/notes/${note.id}`)
+			.then(() => setNotes(notes.filter((_note) => _note.id !== note.id)));
 	};
 
 	const Vacations = ({ vacations, newStartDate, newEndDate }) => {
@@ -114,9 +136,9 @@ function App() {
 						vacations.map((vacation) => {
 							return (
 								<li key={vacation.id}>
-									{moment(vacation.startDate).format('ddd DD/MM/YY')} -{' '}
-									{moment(vacation.endDate).format('ddd DD/MM/YY')} ({' '}
-									{moment(vacation.endDate).diff(vacation.startDate, 'days')} days)
+									{`${moment(vacation.startDate).format('ddd DD/MM/YY')}
+                     - ${moment(vacation.endDate).format('ddd DD/MM/YY')}
+                     (${moment(vacation.endDate).diff(vacation.startDate, 'days')} days) `}
 									<button onClick={() => deleteVacation(vacation)}>Delete</button>
 								</li>
 							);
@@ -136,7 +158,7 @@ function App() {
 		ev.preventDefault();
 		axios
 			.post(`${API}/users/${user.id}/vacations`, { startDate: newStartDate, endDate: newEndDate })
-			.then((newVacation) => setVacations([ ...vacations, newVacation.data ]));
+			.then((_vacation) => setVacations([ ...vacations, _vacation.data ]));
 	};
 
 	const deleteVacation = (vacation) => {
